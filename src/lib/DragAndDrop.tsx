@@ -30,7 +30,7 @@ interface DragAndDropProps extends ContainerProps {
   itemKeyExtractor: (zone: any) => string | number;
   maxItemsPerZone?: number;
 
-  onMaj: (zones: any[], items: any[]) => any;
+  onMaj: (zones: any[], items?: any[]) => any;
   itemsInZoneStyle?: ViewStyle;
   style?: ViewStyle;
   contentContainerStyle?: ViewStyle;
@@ -189,7 +189,7 @@ class DragAndDrop extends Container<DragAndDropProps, DragAndDropState> {
     this.setState({ zones });
   };
   onDragEnd = (item: any) => {
-    const oldItems = this.state.items.map((i) => ({ ...i }));
+    // const oldItems = this.state.items.map((i) => ({ ...i }));
     const oldZones = this.state.zones.map((i) => ({ ...i }));
     const { maxItemsPerZone } = this.props;
     let ok = true;
@@ -200,37 +200,35 @@ class DragAndDrop extends Container<DragAndDropProps, DragAndDropState> {
     }
     const { itemKeyExtractor: ke, onMaj } = this.props;
     let zones = [...this.state.zones];
-    let items = [...this.state.items];
+    // let items = [...this.state.items];
     const hoverIndex = zones.findIndex((z) => z.layout.hover);
     if (hoverIndex === -1) {
-      let itemsIndex = items.findIndex((i) => ke(i) === ke(item));
-      if (itemsIndex === -1) {
-        items.push(item);
-        for (let z of zones) {
-          z.items = z.items?.filter((i: any) => ke(i) !== ke(item));
-        }
-      }
+      // let itemsIndex = items.findIndex((i) => ke(i) === ke(item));
+      // if (itemsIndex === -1) {
+      //     items.push(item);
+      //     for (let z of zones) {
+      //         z.items = z.items?.filter((i) => ke(i) !== ke(item));
+      //     }
+      // }
     } else {
-      items = items.filter((i) => ke(i) !== ke(item));
+      // items = items.filter((i) => ke(i) !== ke(item));
       const zone = zones[hoverIndex];
       for (let z of zones) {
         if (z === zone) {
           if (!zone.items) {
-            zone.items = [item];
+            // zone.items = [item];
           } else {
-            let itemIndex = zone?.items.findIndex(
-              (i: any) => ke(i) === ke(item)
-            );
+            let itemIndex = zone?.items.findIndex((i) => ke(i) === ke(item));
             if (itemIndex === -1) {
               if (maxItemsPerZone && maxItemsPerZone === zone.items.length) {
                 ok = false;
               } else {
-                zone.items.push(item);
+                // zone.items.push(item);
               }
             }
           }
         } else {
-          z.items = z.items?.filter((i: any) => ke(i) !== ke(item));
+          // z.items = z.items?.filter((i) => ke(i) !== ke(item));
         }
       }
     }
@@ -241,17 +239,14 @@ class DragAndDrop extends Container<DragAndDropProps, DragAndDropState> {
       }
       this.setState({ changed: true }, () => {
         this.setState({ changed: false }, () => {
-          //@ts-ignore
-          this.setState({ zones, items });
+          this.setState({ zones });
         });
       });
       onMaj(
-        //@ts-ignore
         zones.map((z: any) => {
           const { layout, dragged, ...rest } = z;
           return rest;
-        }),
-        items
+        })
       );
     } else {
       for (let z of oldZones) {
@@ -260,12 +255,10 @@ class DragAndDrop extends Container<DragAndDropProps, DragAndDropState> {
       }
       this.setState({ changed: true }, () => {
         this.setState({ changed: false }, () => {
-          //@ts-ignore
-          this.setState({ zones: oldZones, items: oldItems });
+          this.setState({ zones: oldZones });
         });
       });
     }
-
     return false;
   };
 
@@ -317,7 +310,7 @@ class DragAndDrop extends Container<DragAndDropProps, DragAndDropState> {
         onLayout={(e) => this.onSetLayout(e)}
       >
         {headerComponent}
-        <ItemsContainer
+        {/* <ItemsContainer
           itemsContainerStyle={itemsContainerStyle}
           dragging={dragging}
           itemKeyExtractor={itemKeyExtractor}
@@ -334,7 +327,7 @@ class DragAndDrop extends Container<DragAndDropProps, DragAndDropState> {
           itemsContainerHeightFixed={itemsContainerHeightFixed}
           onDrag={this.onDrag}
           items={items}
-        />
+        /> */}
         <ZonesContainer
           renderZone={renderZone}
           zones={zones}
