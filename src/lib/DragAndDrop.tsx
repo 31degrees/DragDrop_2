@@ -218,14 +218,14 @@ class DragAndDrop extends Container<DragAndDropProps, DragAndDropState> {
           if (!zone.items) {
             // zone.items = [item];
           } else {
-            let itemIndex = zone?.items.findIndex((i) => ke(i) === ke(item));
-            if (itemIndex === -1) {
-              if (maxItemsPerZone && maxItemsPerZone === zone.items.length) {
-                ok = false;
-              } else {
-                // zone.items.push(item);
-              }
-            }
+            // let itemIndex = zone?.items.findIndex((i) => ke(i) === ke(item));
+            // if (itemIndex === -1) {
+            //   if (maxItemsPerZone && maxItemsPerZone === zone.items.length) {
+            //     ok = false;
+            //   } else {
+            //     // zone.items.push(item);
+            //   }
+            // }
           }
         } else {
           // z.items = z.items?.filter((i) => ke(i) !== ke(item));
