@@ -8,6 +8,7 @@ import Container, {
 } from "./Container";
 import ItemsContainer from "./ItemsContainer";
 import ZonesContainer from "./ZonesContainer";
+import _ from "lodash";
 interface DragAndDropState extends ContainerState {
   items: any[];
   zones: any[];
@@ -51,6 +52,7 @@ interface DragAndDropProps extends ContainerProps {
   itemsNumCollumns?: number;
   itemsInZoneNumCollumns?: number;
   listZonesIdApplyMulti?: number[];
+  enableReinitialize?: boolean;
 }
 
 const PERCENT = 0.15;
@@ -70,6 +72,7 @@ class DragAndDrop extends Container<DragAndDropProps, DragAndDropState> {
   };
   timeout: number | null = null;
   ref = React.createRef<ScrollView>();
+  _zones = React.useRef<any[]>(this.props.zones);
   onDrag = (
     gesture: PanResponderGestureState,
     layoutElement: LayoutProps | null,
@@ -156,7 +159,7 @@ class DragAndDrop extends Container<DragAndDropProps, DragAndDropState> {
       }, 800);
     }
 
-    const zones: any[] = [...this.state.zones];
+    const zones: any[] = [..._.cloneDeep(this.state.zones)];
     for (let z of zones) {
       if (zoneKeyExtractor(z) === zoneId) {
         z.dragged = true;
@@ -190,7 +193,8 @@ class DragAndDrop extends Container<DragAndDropProps, DragAndDropState> {
   };
   onDragEnd = (item: any) => {
     // const oldItems = this.state.items.map((i) => ({ ...i }));
-    const oldZones = this.state.zones.map((i) => ({ ...i }));
+    const _oldZones = [..._.cloneDeep(this.state.zones)];
+    const oldZones = _oldZones.map((i) => ({ ...i }));
     const { maxItemsPerZone } = this.props;
     let ok = true;
     this.setState({ addedHeight: 0 });
@@ -199,7 +203,8 @@ class DragAndDrop extends Container<DragAndDropProps, DragAndDropState> {
       this.timeout = null;
     }
     const { itemKeyExtractor: ke, onMaj } = this.props;
-    let zones = [...this.state.zones];
+
+    let zones = [..._.cloneDeep(this.state.zones)];
     // let items = [...this.state.items];
     const hoverIndex = zones.findIndex((z) => z.layout.hover);
     if (hoverIndex === -1) {
